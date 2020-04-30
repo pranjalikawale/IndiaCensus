@@ -43,19 +43,11 @@ public class CensusAnalyser {
         return loadIndiaCensusData(csvFilePath, IndiaCensusCSV.class);
     }
 
-<<<<<<< HEAD
-    public int loadIndianStateCode(String csvFilePath) throws CensusAnalyserException {
-        try {
-            Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
-            CsvToBeanBuilder<IndiaStateCodeCSV> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
-            csvToBeanBuilder.withType(IndiaStateCodeCSV.class);
-=======
     public int loadIndianStateCode(String csvFilePath,Class classType) throws CensusAnalyserException {
         try {
             Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
             CsvToBeanBuilder<IndiaStateCodeCSV> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
             csvToBeanBuilder.withType(classType);
->>>>>>> UC2-LoadIndianStateCodeInfo
             csvToBeanBuilder.withIgnoreLeadingWhiteSpace(true);
             CsvToBean<IndiaStateCodeCSV> csvToBean = csvToBeanBuilder.build();
             Iterator<IndiaStateCodeCSV> IndiaStateCodeIterator = csvToBean.iterator();
@@ -73,12 +65,8 @@ public class CensusAnalyser {
                     CensusAnalyserException.ExceptionType.NO_SUCH_CLASS_TYPE);
         }
     }
-<<<<<<< HEAD
-=======
     public int loadIndianStateCode(String csvFilePath) throws CensusAnalyserException {
         return loadIndiaCensusData(csvFilePath, IndiaCensusCSV.class);
     }
->>>>>>> UC2-LoadIndianStateCodeInfo
-
 
 }
