@@ -33,13 +33,26 @@ public class CensusAnalyserTest {
         try {
             CensusAnalyser censusAnalyser = new CensusAnalyser();
 <<<<<<< HEAD
+<<<<<<< HEAD
             int numOfRecords = censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH,Integer.class);
             Assert.assertEquals(29,numOfRecords);
 =======
             censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH,Integer.class);
 >>>>>>> UC2-LoadIndianStateCodeInfo
+=======
+            censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH,Integer.class,',');
+>>>>>>> UC1-LoadIndianCencusInfo
         } catch (CensusAnalyserException e) {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.NO_SUCH_CLASS_TYPE,e.type);
+        }
+    }
+    @Test
+    public void givenIndianCensusCSVFile_WithWrongDelimiter_ShouldThrowException() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH,IndiaCensusCSV.class,';');
+        } catch (CensusAnalyserException e) {
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.WRONG_DELIMETER,e.type);
         }
     }
     @Test
@@ -62,7 +75,10 @@ public class CensusAnalyserTest {
         }
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> UC1-LoadIndianCencusInfo
     @Test
     public void givenIndianCodeStateCSVFile_WithWrongType_ShouldThrowException() {
         try {
@@ -72,6 +88,9 @@ public class CensusAnalyserTest {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.NO_SUCH_CLASS_TYPE,e.type);
         }
     }
+<<<<<<< HEAD
 >>>>>>> UC2-LoadIndianStateCodeInfo
+=======
+>>>>>>> UC1-LoadIndianCencusInfo
 
 }
