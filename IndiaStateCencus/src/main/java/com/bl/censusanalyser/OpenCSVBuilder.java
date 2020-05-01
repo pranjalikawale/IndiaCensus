@@ -8,7 +8,7 @@ import java.io.Reader;
 import java.util.InputMismatchException;
 import java.util.Iterator;
 
-public class OpenCSVBuilder {
+public class OpenCSVBuilder implements ICSVBuilder {
     public String ColName=null;
 
     public <T> Iterator<T> getCSVIterator(Readable reader, Class<T> classType, char separator) throws CensusAnalyserException {

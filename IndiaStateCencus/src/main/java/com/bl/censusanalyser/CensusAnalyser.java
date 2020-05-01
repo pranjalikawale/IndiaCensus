@@ -1,8 +1,5 @@
 package com.bl.censusanalyser;
 
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -15,7 +12,8 @@ public class CensusAnalyser {
         int namOfEnteries = 0;
 
         try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));){
-            Iterator<Object> csvIterable = new OpenCSVBuilder().getCSVIterator(reader,classType,seprator);
+            ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
+            Iterator<IndiaCensusCSV> csvIterable = csvBuilder.getCSVIterator(reader,classType,seprator);
             namOfEnteries = this.getCount(csvIterable);
             //return namOfEateries;
         } catch (IOException e) {
@@ -29,7 +27,8 @@ public class CensusAnalyser {
     public int loadIndianStateCode(String csvFilePath,Class classType,char seprator) throws CensusAnalyserException {
         int namOfEnteries=0;
         try(Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));) {
-            Iterator<Object> csvIterable = new OpenCSVBuilder().getCSVIterator(reader,classType,seprator);
+            ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
+            Iterator<IndiaStateCodeCSV> csvIterable = csvBuilder.getCSVIterator(reader,classType,seprator);
             namOfEnteries = this.getCount(csvIterable);
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
@@ -37,6 +36,11 @@ public class CensusAnalyser {
         }
         return namOfEnteries;
     }
+    public <T> int getCount(Iterator<T> iterator){
+        Iterable<T> csvIterable = () -> iterator;
+        return (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
+    }
+
 
     public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
         return loadIndiaCensusData(csvFilePath, IndiaCensusCSV.class, ',');
@@ -47,10 +51,7 @@ public class CensusAnalyser {
         return loadIndianStateCode(csvFilePath, IndiaStateCodeCSV.class,',');
     }
 
-    public <T> int getCount(Iterator<T> iterator){
-        Iterable<T> csvIterable = () -> iterator;
-        return (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
-    }
+
 
 
 }
