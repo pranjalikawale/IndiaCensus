@@ -51,8 +51,10 @@ public class CensusAnalyser {
         return loadIndiaCensusData(csvFilePath, IndiaCensusCSV.class, ',');
     }
 
-    public int loadIndianStateCode(String csvFilePath,Class classType) throws CensusAnalyserException {
+    public int loadIndianStateCode(String csvFilePath,Class classType,char seprator) throws CensusAnalyserException {
         try {
+            if(seprator!=',')
+            { throw new InputMismatchException(); }
             Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
             CsvToBeanBuilder<IndiaStateCodeCSV> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);
             csvToBeanBuilder.withType(classType);
@@ -62,19 +64,22 @@ public class CensusAnalyser {
             Iterable<IndiaStateCodeCSV> csvIterable = () -> IndiaStateCodeIterator;
             int namOfEateries = (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
             return namOfEateries;
-        } catch (IOException e) {
-            throw new CensusAnalyserException(e.getMessage(),
-                    CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
         } catch (IllegalStateException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
+        } catch (IOException e) {
+            throw new CensusAnalyserException(e.getMessage(),
+                    CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
+        }catch (InputMismatchException e){
+            throw new CensusAnalyserException(e.getMessage(),
+                    CensusAnalyserException.ExceptionType.WRONG_DELIMETER);
         }catch (RuntimeException e){
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.NO_SUCH_CLASS_TYPE);
         }
     }
     public int loadIndianStateCode(String csvFilePath) throws CensusAnalyserException {
-        return loadIndianStateCode(csvFilePath, IndiaStateCodeCSV.class);
+        return loadIndianStateCode(csvFilePath, IndiaStateCodeCSV.class,',');
     }
 
 }
