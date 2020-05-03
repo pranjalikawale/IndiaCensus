@@ -1,7 +1,6 @@
 package com.bl.censusanalyser;
 
-import com.opencsv.bean.ColumnPositionMappingStrategy;
-import com.opencsv.bean.HeaderColumnNameMappingStrategy;
+import com.google.gson.Gson;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -104,14 +103,19 @@ public class CensusAnalyserTest {
         try {
             CensusAnalyser censusAnalyser = new CensusAnalyser();
             censusAnalyser.setColName("State");
-            //censusAnalyser.setCsvFilePath(INDIAN_STATE_CODE_CSV_FILE_PATH);
             censusAnalyser.loadIndianStateCode(INDIAN_STATE_CODE_CSV_FILE_PATH,IndiaStateCodeCSV.class,',');
         } catch (CensusAnalyserException e) {
-
             Assert.assertEquals(CensusAnalyserException.ExceptionType.WRONG_HEADER,e.type);
         }
     }
 
+    @Test
+    public void givenIndianCensusData_WhenSortOnState_ShouldReturnSortedResult() throws CensusAnalyserException {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            String sortedCensusData=censusAnalyser.getStateWiseSortedCensusData(INDIA_CENSUS_CSV_FILE_PATH);
+            IndiaCensusCSV censusCSV[]=new Gson().fromJson(sortedCensusData, IndiaCensusCSV[].class);
+            Assert.assertEquals("Andhra Pradesh",censusCSV[0].state);
+    }
 }
 
 
