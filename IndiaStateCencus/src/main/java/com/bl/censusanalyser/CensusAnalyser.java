@@ -3,29 +3,26 @@ package com.bl.censusanalyser;
 import com.google.gson.Gson;
 import com.opencsv.CSVReader;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Comparator;
-import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-import static java.lang.Comparable.*;
 
 public class CensusAnalyser {
+    List<IndiaCensusCSV> csvList=null;
     public int loadIndiaCensusData(String csvFilePath, Class classType, char seprator) throws CensusAnalyserException {
-        int namOfEnteries = 0;
         try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));){
             SeparatorCheck(seprator);
             checkCsvHeader(csvFilePath); // Check the column
             checkCSVType(IndiaCensusCSV.class,classType);
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-            List<IndiaCensusCSV> csvList = csvBuilder.getCSVList(reader,classType,seprator);
+            csvList = csvBuilder.getCSVList(reader,classType,seprator);
             return csvList.size();
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
@@ -49,7 +46,7 @@ public class CensusAnalyser {
             //return csvList.size();
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
-                    CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
+                    CensusAnalyserException.ExceptionType.STATECODE_FILE_PROBLEM);
         }
         catch(CSVBuilderException e){
             throw new CensusAnalyserException(e.getMessage(),e.type.name());
@@ -75,7 +72,7 @@ public class CensusAnalyser {
     }
 
     public void checkCSVType(Class CSVClass,Class CSVClassType) throws CensusAnalyserException {
-        if (CSVClass.equals(CSVClass)){
+        if (!(CSVClass.equals(CSVClassType))){
             throw new CensusAnalyserException(CensusAnalyserException.ExceptionType.NO_SUCH_CLASS_TYPE);
         }
     }
@@ -111,31 +108,18 @@ public class CensusAnalyser {
         }
     }
 
-
-    public String getStateWiseSortedCensusData(String csvFilePath) throws CensusAnalyserException {
-        try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));){
-            ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-            System.out.println("getSortedState");
-            List<IndiaCensusCSV> csvList = csvBuilder.getCSVList(reader,IndiaCensusCSV.class,',');
-            System.out.println("List before"+csvList.size());
+    public String getStateWiseSortedCensusData() throws CensusAnalyserException {
+            if (csvList==null || csvList.size()==0){
+                throw new CensusAnalyserException("No census data",CensusAnalyserException.ExceptionType.NO_CENSUS_DATA);
+            }
             Comparator<IndiaCensusCSV> censusComparator=Comparator.comparing(census->census.state);
-            this.sort(csvList,censusComparator);
-            System.out.println("List after"+csvList.size());
-
+            this.sort(censusComparator);
             String sortedJson=new Gson().toJson(csvList);
-            System.out.println("Json"+sortedJson);
             return sortedJson;
-        } catch (IOException e) {
-            throw new CensusAnalyserException(e.getMessage(),
-                    CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
-        }
-        catch(CSVBuilderException e){
-            throw new CensusAnalyserException(e.getMessage(),e.type.name());
-        }
+
     }
 
-    private void sort(List<IndiaCensusCSV>csvList,Comparator<IndiaCensusCSV> censusComparator){
-        System.out.println("List Sorted"+csvList.size());
+    private void sort(Comparator<IndiaCensusCSV> censusComparator){
         for (int i=0;i<csvList.size()-1;i++){
             for (int j=0;j<csvList.size()-i-1;j++){
                 IndiaCensusCSV censusCSV1=csvList.get(i);
@@ -146,7 +130,5 @@ public class CensusAnalyser {
                 }
             }
         }
-        System.out.println("List Sortedafter"+csvList.size());
-
     }
 }
