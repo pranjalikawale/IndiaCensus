@@ -8,6 +8,9 @@ public class CensusAnalyserException extends Exception {
 
     ExceptionType type;
 
+    public CensusAnalyserException(ExceptionType type) {
+        this.type = type;
+    }
     public CensusAnalyserException(String message, ExceptionType type) {
         super(message);
         this.type = type;
