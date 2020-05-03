@@ -51,9 +51,10 @@ public class CensusAnalyserTest {
     @Test
     public void givenIndianCensusCSVFile_WithWrongHeader_ShouldThrowException() {
         try {
-            OpenCSVBuilder os=new OpenCSVBuilder();
-            os.getColName("State");
             CensusAnalyser censusAnalyser = new CensusAnalyser();
+            censusAnalyser.setColName("State");
+            //censusAnalyser.setCsvFilePath(INDIA_CENSUS_CSV_FILE_PATH);
+
             censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH,IndiaCensusCSV.class,',');
         } catch (CensusAnalyserException e) {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.WRONG_HEADER,e.type);
@@ -101,13 +102,12 @@ public class CensusAnalyserTest {
     @Test
     public void givenIndianCodeStateCSVFile_WithWrongHeader_ShouldThrowException1() {
         try {
-            OpenCSVBuilder os=new OpenCSVBuilder();
-            os.getColName("State");
-
             CensusAnalyser censusAnalyser = new CensusAnalyser();
+            censusAnalyser.setColName("State");
+            //censusAnalyser.setCsvFilePath(INDIAN_STATE_CODE_CSV_FILE_PATH);
             censusAnalyser.loadIndianStateCode(INDIAN_STATE_CODE_CSV_FILE_PATH,IndiaStateCodeCSV.class,',');
-
         } catch (CensusAnalyserException e) {
+
             Assert.assertEquals(CensusAnalyserException.ExceptionType.WRONG_HEADER,e.type);
         }
     }
