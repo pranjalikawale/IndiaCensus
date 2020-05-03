@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.InputMismatchException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.StreamSupport;
 
 public class CensusAnalyser {
@@ -21,9 +22,8 @@ public class CensusAnalyser {
             checkCsvHeader(csvFilePath); // Check the column
             checkCSVType(IndiaCensusCSV.class,classType);
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-            Iterator<IndiaCensusCSV> csvIterable = csvBuilder.getCSVIterator(reader,classType,seprator);
-            namOfEnteries = this.getCount(csvIterable);
-            //return namOfEateries;
+            List<IndiaCensusCSV> csvList = csvBuilder.getCSVList(reader,classType,seprator);
+            return csvList.size();
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
@@ -31,18 +31,19 @@ public class CensusAnalyser {
         catch(CSVBuilderException e){
             throw new CensusAnalyserException(e.getMessage(),e.type.name());
         }
-        return namOfEnteries;
     }
     public int loadIndianStateCode(String csvFilePath,Class classType,char seprator) throws CensusAnalyserException {
 
-        int namOfEnteries=0;
+        int noOfEnteries=0;
         try(Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));) {
             SeparatorCheck(seprator);
             checkCsvHeader(csvFilePath); // Check the column
             checkCSVType(IndiaStateCodeCSV.class,classType);
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             Iterator<IndiaStateCodeCSV> csvIterable = csvBuilder.getCSVIterator(reader,classType,seprator);
-            namOfEnteries = this.getCount(csvIterable);
+            noOfEnteries = this.getCount(csvIterable);
+            //List<IndiaStateCodeCSV> csvList = csvBuilder.getCSVList(reader,classType,seprator);
+            //return csvList.size();
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
@@ -50,18 +51,16 @@ public class CensusAnalyser {
         catch(CSVBuilderException e){
             throw new CensusAnalyserException(e.getMessage(),e.type.name());
         }
-        return namOfEnteries;
+        return noOfEnteries;
     }
     public <T> int getCount(Iterator<T> iterator){
         Iterable<T> csvIterable = () -> iterator;
         return (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
     }
 
-
     public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
         return loadIndiaCensusData(csvFilePath, IndiaCensusCSV.class, ',');
     }
-
 
     public int loadIndianStateCode(String csvFilePath) throws CensusAnalyserException {
         return loadIndianStateCode(csvFilePath, IndiaStateCodeCSV.class,',');
