@@ -28,6 +28,9 @@ public class CensusAnalyser {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
         }
+        catch(CSVBuilderException e){
+            throw new CensusAnalyserException(e.getMessage(),e.type.name());
+        }
         return namOfEnteries;
     }
     public int loadIndianStateCode(String csvFilePath,Class classType,char seprator) throws CensusAnalyserException {
@@ -43,6 +46,9 @@ public class CensusAnalyser {
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
+        }
+        catch(CSVBuilderException e){
+            throw new CensusAnalyserException(e.getMessage(),e.type.name());
         }
         return namOfEnteries;
     }
