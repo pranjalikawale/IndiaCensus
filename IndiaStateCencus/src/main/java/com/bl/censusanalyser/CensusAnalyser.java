@@ -37,7 +37,7 @@ public class CensusAnalyser {
             return this.censusCSVList.size();
             /*Iterable<IndiaCensusCSV> csvIterable=()->csvIterator;
             StreamSupport.stream(csvIterable.spliterator(),false)
-                   .forEach(csvState->censusCSVMap.put(csvState.state, new IndiaCensusDAO(csvState)));
+                         .forEach(csvState->censusCSVMap.put(csvState.state, new IndiaCensusDAO(csvState)));
             censusCSVList= new ArrayList(censusCSVMap.values());
             censusCSVList = csvBuilder.getCSVList(reader,classType,seprator);
             Map<String,Object> censusCSVMapData=new HashMap<>();
@@ -167,13 +167,11 @@ public class CensusAnalyser {
 
                     }
                 }
-
             }
         }
     }
 
-    public String getJson(List list)
-    {
+    public String getJson(List list) {
         String sortedJson=new Gson().toJson(list);
         return sortedJson;
     }
@@ -209,4 +207,10 @@ public class CensusAnalyser {
         return getJson(censusCSVList);
     }
 
+    public String getAreaWiseSortedCensusData(String sorting) throws CensusAnalyserException {
+        checkForListEmpty(censusCSVList);
+        Comparator<IndiaCensusDAO> censusComparator=Comparator.comparing(indiaCensusCSV->indiaCensusCSV.areaInSqKm);
+        this.sort(censusComparator,censusCSVList,sorting);
+        return getJson(censusCSVList);
+    }
 }
