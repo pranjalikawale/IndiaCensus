@@ -1,5 +1,9 @@
 package com.bl.censusanalyser;
 
+import com.bl.censusanalyser.analyser.CensusAnalyser;
+import com.bl.censusanalyser.exception.CensusAnalyserException;
+import com.bl.censusanalyser.model.IndiaStateCodeCSV;
+import com.bl.censusanalyser.model.IndiaCensusCSV;
 import com.google.gson.Gson;
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,7 +46,7 @@ public class CensusAnalyserTest {
     public void givenIndianCensusCSVFile_WithWrongDelimiter_ShouldThrowException() {
         try {
             CensusAnalyser censusAnalyser = new CensusAnalyser();
-            censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH,IndiaCensusCSV.class,';');
+            censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH, IndiaCensusCSV.class,';');
         } catch (CensusAnalyserException e) {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.WRONG_DELIMETER,e.type);
         }
@@ -52,8 +56,6 @@ public class CensusAnalyserTest {
         try {
             CensusAnalyser censusAnalyser = new CensusAnalyser();
             censusAnalyser.setColName("State");
-            //censusAnalyser.setCsvFilePath(INDIA_CENSUS_CSV_FILE_PATH);
-
             censusAnalyser.loadIndiaCensusData(INDIA_CENSUS_CSV_FILE_PATH,IndiaCensusCSV.class,',');
         } catch (CensusAnalyserException e) {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.WRONG_HEADER,e.type);
@@ -92,7 +94,7 @@ public class CensusAnalyserTest {
     public void givenIndianCodeStateCSVFile_WithWrongDelimiter_ShouldThrowException() {
         try {
             CensusAnalyser censusAnalyser = new CensusAnalyser();
-            censusAnalyser.loadIndianStateCode(INDIAN_STATE_CODE_CSV_FILE_PATH,IndiaStateCodeCSV.class,';');
+            censusAnalyser.loadIndianStateCode(INDIAN_STATE_CODE_CSV_FILE_PATH, IndiaStateCodeCSV.class,';');
         } catch (CensusAnalyserException e) {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.WRONG_DELIMETER,e.type);
         }

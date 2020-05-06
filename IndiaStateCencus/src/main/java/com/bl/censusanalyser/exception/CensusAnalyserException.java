@@ -1,12 +1,12 @@
-package com.bl.censusanalyser;
+package com.bl.censusanalyser.exception;
 
 public class CensusAnalyserException extends Exception {
 
-    enum ExceptionType {
+    public enum ExceptionType {
         CENSUS_FILE_PROBLEM,NO_SUCH_CLASS_TYPE,WRONG_DELIMETER,WRONG_HEADER,NO_CENSUS_DATA,STATECODE_FILE_PROBLEM;
     }
 
-    ExceptionType type;
+    public ExceptionType type;
 
     public CensusAnalyserException(ExceptionType type) {
         this.type = type;

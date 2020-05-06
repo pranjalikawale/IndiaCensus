@@ -1,4 +1,4 @@
-package com.bl.censusanalyser;
+package com.bl.censusanalyser.opencsv;
 
 public class CSVBuilderFactory {
     public static ICSVBuilder createCSVBuilder(){

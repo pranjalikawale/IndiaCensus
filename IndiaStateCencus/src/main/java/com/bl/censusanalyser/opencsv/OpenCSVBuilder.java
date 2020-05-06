@@ -1,5 +1,8 @@
-package com.bl.censusanalyser;
+package com.bl.censusanalyser.opencsv;
 
+import com.bl.censusanalyser.model.IndiaCensusCSV;
+import com.bl.censusanalyser.model.IndiaStateCodeCSV;
+import com.bl.censusanalyser.exception.CSVBuilderException;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
@@ -20,7 +23,7 @@ public class OpenCSVBuilder<E> implements ICSVBuilder {
         List CSVList=this.getCSVBean(reader,classType,separator).parse();
         Map<String,T> csvMapData=new HashMap<>();
                for(Object o : CSVList){
-          if(classType.getName()=="com.bl.censusanalyser.IndiaStateCodeCSV") {
+          if(classType.getName()=="com.bl.censusanalyser.model.IndiaStateCodeCSV") {
               IndiaStateCodeCSV cs = (IndiaStateCodeCSV) o;
               csvMapData.put(cs.state, (T)cs);
           }

@@ -1,4 +1,6 @@
-package com.bl.censusanalyser;
+package com.bl.censusanalyser.opencsv;
+
+import com.bl.censusanalyser.exception.CSVBuilderException;
 
 import java.io.Reader;
 import java.util.Iterator;
