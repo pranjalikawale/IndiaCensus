@@ -8,10 +8,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
@@ -199,4 +195,10 @@ public class CensusAnalyser {
         return getJson(tempList);
     }
 
+    public  String getPopulationWiseSortedCensusData(String sorting) throws CensusAnalyserException {
+        checkForListEmpty(censusCSVList);
+        Comparator<IndiaCensusDAO> censusComparator=Comparator.comparing(indiaCensusCSV->indiaCensusCSV.population);
+        this.sort(censusComparator,censusCSVList,sorting);
+        return getJson(censusCSVList);
+    }
 }

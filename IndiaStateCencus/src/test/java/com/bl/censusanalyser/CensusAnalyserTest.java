@@ -171,7 +171,7 @@ public class CensusAnalyserTest {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.NO_CENSUS_DATA,e.type);
         }
     }
-    /*
+
     @Test
     public void givenIndianCensusData_WhenSortOnPopulation_ShouldReturnSortedResult() {
         try {
@@ -185,7 +185,7 @@ public class CensusAnalyserTest {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.NO_CENSUS_DATA,e.type);
         }
     }
-
+    /*
     @Test
     public void givenIndianCensusData_WhenSortOnDensity_ShouldReturnSortedResult() {
         try {
