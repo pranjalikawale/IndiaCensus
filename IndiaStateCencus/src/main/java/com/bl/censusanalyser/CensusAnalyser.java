@@ -201,4 +201,12 @@ public class CensusAnalyser {
         this.sort(censusComparator,censusCSVList,sorting);
         return getJson(censusCSVList);
     }
+
+    public  String getDensityWiseSortedCensusData(String sorting) throws CensusAnalyserException {
+        checkForListEmpty(censusCSVList);
+        Comparator<IndiaCensusDAO> censusComparator=Comparator.comparing(indiaCensusCSV->indiaCensusCSV.densityPerSqKm);
+        this.sort(censusComparator,censusCSVList,sorting);
+        return getJson(censusCSVList);
+    }
+
 }
