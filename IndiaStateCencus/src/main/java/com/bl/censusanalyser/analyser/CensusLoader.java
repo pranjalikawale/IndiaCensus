@@ -8,6 +8,7 @@ import com.bl.censusanalyser.model.IndiaStateCodeCSV;
 import com.bl.censusanalyser.model.USCensusCSV;
 import com.bl.censusanalyser.opencsv.CSVBuilderFactory;
 import com.bl.censusanalyser.opencsv.ICSVBuilder;
+import com.sun.tools.jdeprscan.CSV;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -20,7 +21,18 @@ import java.util.Map;
 import java.util.stream.StreamSupport;
 
 public class CensusLoader {
-    public <T> Map<String,CensusDAO> loadCensusData(String csvFilePath, Class<T> classType, char seprator) throws CensusAnalyserException {
+         public <T> Map<String,CensusDAO> loadCensusData(CensusAnalyser.FileType fileType, String csvFilePath,char seprator) throws CensusAnalyserException {
+            if(fileType.equals(CensusAnalyser.FileType.INDIA))
+                return this.loadCensusData(csvFilePath,IndiaCensusCSV.class,seprator);
+            else if(fileType.equals(CensusAnalyser.FileType.US))
+                return this.loadCensusData(csvFilePath,USCensusCSV.class,seprator);
+            else if(fileType.equals(CensusAnalyser.FileType.INDIASTATE))
+                return this.loadCensusData(csvFilePath,IndiaStateCodeCSV.class,seprator);
+            else
+                throw new CensusAnalyserException("Incorrect type of file", CensusAnalyserException.ExceptionType.INVALID_FILE_TYPE);
+         }
+
+        public <T> Map<String,CensusDAO> loadCensusData(String csvFilePath, Class<T> classType, char seprator) throws CensusAnalyserException {
         Map<String,CensusDAO> censusCSVMap=new HashMap<>();
         try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));){
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();

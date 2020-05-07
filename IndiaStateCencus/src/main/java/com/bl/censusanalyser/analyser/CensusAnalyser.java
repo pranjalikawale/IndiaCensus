@@ -6,61 +6,40 @@ import com.bl.censusanalyser.exception.CensusAnalyserException;
 import com.bl.censusanalyser.model.IndiaStateCodeCSV;
 import com.bl.censusanalyser.model.IndiaCensusCSV;
 import com.bl.censusanalyser.model.USCensusCSV;
-import com.bl.censusanalyser.opencsv.CSVBuilderFactory;
-import com.bl.censusanalyser.opencsv.ICSVBuilder;
 import com.google.gson.Gson;
 import com.opencsv.CSVReader;
-import com.sun.tools.jdeprscan.CSV;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.StreamSupport;
-
 
 public class CensusAnalyser {
     List<CensusDAO> censusCSVList=null;
     Map<String,CensusDAO> censusCSVMap=null;
     public String ColName=null;
+    public enum FileType {INDIA,US,INDIASTATE;}
 
-    public CensusAnalyser(){
-        this.censusCSVList=new ArrayList<>();
-        this.censusCSVMap=new HashMap<>();
-    }
+    public CensusAnalyser(){ }
 
-
-
-    /*  public <T> int getCount(Iterator<T> iterator){
-        Iterable<T> csvIterable = () -> iterator;
-        return (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
-    }
-    */
-
-    public <T> int CensusData(String csvFilePath, Class<T> classType, char seprator) throws CensusAnalyserException {
+    public <T> int CensusData(FileType fileType,String csvFilePath, Class<T> classType, char seprator) throws CensusAnalyserException {
         SeparatorCheck(seprator);
         checkCsvHeader(csvFilePath); // Check the column
         checkCSVType(classType);
-        censusCSVMap=new CensusLoader().loadCensusData(csvFilePath, classType, ',');
-        censusCSVList= new ArrayList(censusCSVMap.values());
-        return this.censusCSVList.size();
+        censusCSVMap=new CensusLoader().loadCensusData(fileType,csvFilePath,seprator);
+        return getCount();
     }
-    public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
-        censusCSVMap=new CensusLoader().loadCensusData(csvFilePath, IndiaCensusCSV.class, ',');
-        censusCSVList= new ArrayList(censusCSVMap.values());
-        return this.censusCSVList.size();
+    public int loadIndiaCensusData(FileType fileType,String csvFilePath) throws CensusAnalyserException {
+        return CensusData(fileType,csvFilePath, IndiaCensusCSV.class, ',');
     }
 
-    public int loadUSCensusData(String csvFilePath) throws CensusAnalyserException {
-        censusCSVMap=new CensusLoader().loadCensusData(csvFilePath, USCensusCSV.class, ',');
-        censusCSVList= new ArrayList(censusCSVMap.values());
-        return this.censusCSVList.size();
+    public int loadUSCensusData(FileType fileType,String csvFilePath) throws CensusAnalyserException {
+        return CensusData(fileType,csvFilePath, USCensusCSV.class, ',');
     }
 
-    public int loadIndianStateCode(String csvFilePath) throws CensusAnalyserException {
-        censusCSVMap=new CensusLoader().loadCensusData(csvFilePath, IndiaStateCodeCSV.class,',');
+    public int loadIndianStateCode(FileType fileType,String csvFilePath) throws CensusAnalyserException {
+        return CensusData(fileType,csvFilePath, IndiaStateCodeCSV.class,',');
+    }
+    public int getCount(){
         censusCSVList= new ArrayList(censusCSVMap.values());
         return this.censusCSVList.size();
     }
@@ -174,4 +153,9 @@ public class CensusAnalyser {
         this.sort(censusComparator,censusCSVList,sortingOrder);
         return getJson(censusCSVList);
     }
+     /*  public <T> int getCount(Iterator<T> iterator){
+        Iterable<T> csvIterable = () -> iterator;
+        return (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
+    }
+    */
 }
