@@ -14,6 +14,7 @@ public class CensusAnalyserTest {
     private static final String INDIA_CENSUS_CSV_FILE_PATH = "./src/test/resources/IndiaStateCensusData.csv";
     private static final String WRONG_CSV_FILE_PATH = "./src/main/resources/IndiaStateCensusData.csv";
     private static final String INDIAN_STATE_CODE_CSV_FILE_PATH = "./src/test/resources/IndiaStateCode.csv";
+    private static final String US_CSV_FILE_PATH = "./src/test/resources/USCensusData.csv";
     @Test
     public void givenIndianCensusCSVFile_ReturnsCorrectRecords() {
         try {
@@ -159,7 +160,6 @@ public class CensusAnalyserTest {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.NO_CENSUS_DATA,e.type);
         }
     }
-
     @Test
     public void givenIndianCensusData_WhenSortOnStateCode_ShouldLastReturnSortedResult() {
         try {
@@ -173,7 +173,6 @@ public class CensusAnalyserTest {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.NO_CENSUS_DATA,e.type);
         }
     }
-
     @Test
     public void givenIndianCensusData_WhenSortOnPopulation_ShouldReturnSortedResult() {
         try {
@@ -186,7 +185,6 @@ public class CensusAnalyserTest {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.NO_CENSUS_DATA,e.type);
         }
     }
-
     @Test
     public void givenIndianCensusData_WhenSortOnDensity_ShouldReturnSortedResult() {
         try {
@@ -199,7 +197,6 @@ public class CensusAnalyserTest {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.NO_CENSUS_DATA,e.type);
         }
     }
-
     @Test
     public void givenIndianCensusData_WhenSortOnArea_ShouldReturnSortedResult() {
         try {
@@ -212,7 +209,6 @@ public class CensusAnalyserTest {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.NO_CENSUS_DATA,e.type);
         }
     }
-
     @Test
     public void givenIndianCensusData_WhenSortOnArea_ShouldHandleException() {
         try {
@@ -223,6 +219,14 @@ public class CensusAnalyserTest {
         }catch (CensusAnalyserException e) {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.NO_CENSUS_DATA,e.type);
         }
+    }
+    @Test
+    public void givenUSCensusCSVFile_ReturnsCorrectRecords() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            int numOfRecords = censusAnalyser.loadUSCensusData(US_CSV_FILE_PATH);
+            Assert.assertEquals(52,numOfRecords);
+        } catch (CensusAnalyserException e) { }
     }
 }
 
