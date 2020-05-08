@@ -20,7 +20,7 @@ import java.util.stream.StreamSupport;
 
 public abstract class CensusAdapter {
 
-    public <T> Map<String,CensusDAO> loadCensusData(String csvFilePath, Class<T> classType, char seprator) throws CensusAnalyserException {
+    public <T> Map<String,CensusDAO> loadedCensusData(String csvFilePath, Class<T> classType, char seprator) throws CensusAnalyserException {
         try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));){
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             Iterator<T> csvIterator = csvBuilder.getCSVIterator(reader,classType,seprator);

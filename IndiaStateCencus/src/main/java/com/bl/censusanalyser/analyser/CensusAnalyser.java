@@ -15,15 +15,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CensusAnalyser {
+    //Declared field
     Map<String,CensusDAO> censusCSVMap=null;
     public String ColName=null;
     public enum CountryAndState {INDIA,US,INDIASTATE;}
     private CountryAndState countryAndState;
 
+    //Declared Constructor
     public CensusAnalyser(CountryAndState countryAndState){
         this.countryAndState = countryAndState;
     }
-
+    //Cencus Data method used to load data
     public <T> int CensusData(CountryAndState countryAndState, String csvFilePath, Class<T> classType, char seprator)
                               throws CensusAnalyserException {
         SeparatorCheck(seprator);
@@ -42,12 +44,12 @@ public class CensusAnalyser {
         throw new CensusAnalyserException("Incorrect type of file",
                                             CensusAnalyserException.ExceptionType.INVALID_FILE_TYPE);
     }
-
+    //Check for delimiter
     private void SeparatorCheck(char separator) throws CensusAnalyserException {
         if(separator!=',')
         { throw new CensusAnalyserException(CensusAnalyserException.ExceptionType.WRONG_DELIMETER); }
     }
-
+    //Check for Class Type
     private void checkCSVType(Class CSVClassType) throws CensusAnalyserException {
         if(!((CSVClassType.getName().equals("com.bl.censusanalyser.model.IndiaCensusCSV"))
                 ||(CSVClassType.getName().equals("com.bl.censusanalyser.model.IndiaStateCodeCSV"))
@@ -55,11 +57,11 @@ public class CensusAnalyser {
             throw new CensusAnalyserException(CensusAnalyserException.ExceptionType.NO_SUCH_CLASS_TYPE);
         }
     }
-
+    //Set column name
     public void setColName(String ColName){
         this.ColName=ColName;
     }
-
+    //Check for header
     private void checkCsvHeader(String csvFilePath) throws CensusAnalyserException {
         if(ColName!=null)
         {
@@ -83,18 +85,18 @@ public class CensusAnalyser {
             }
         }
     }
-
+    //Get Sorted Census Data
     public  String getSortedCensusData(String parameter,String sortingOrder) throws CensusAnalyserException {
         checkForListEmpty(censusCSVMap);
         return arraylistInSortedOrder(sortingParameter(parameter,sortingOrder));
     }
-
+    //Check for Empty List
     private void checkForListEmpty(Map censusCSVMap) throws CensusAnalyserException {
         if (censusCSVMap==null || censusCSVMap.size()==0){
             throw new CensusAnalyserException("No census data",CensusAnalyserException.ExceptionType.NO_CENSUS_DATA);
         }
     }
-
+    //Check for Sorting Parameter and order
     private Comparator sortingParameter(String parameter,String sortingOrder)
     {
         Comparator<CensusDAO> censusComparator=null;
@@ -123,7 +125,7 @@ public class CensusAnalyser {
         return censusComparator;
     }
 
-
+    //Return list in sorted order
     private String arraylistInSortedOrder(Comparator <CensusDAO> censusComparator){
         ArrayList censusDTO=censusCSVMap.values().stream()
                 .sorted(censusComparator)
@@ -131,13 +133,13 @@ public class CensusAnalyser {
                 .collect(Collectors.toCollection(ArrayList::new));
         return getJson(censusDTO);
     }
-
+    //Return JSON
     private String getJson(List list) {
         String sortedJson=new Gson().toJson(list);
         return sortedJson;
     }
 
-     /*  public <T> int getCount(Iterator<T> iterator){
+    /*  public <T> int getCount(Iterator<T> iterator){
         Iterable<T> csvIterable = () -> iterator;
         return (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
     }
