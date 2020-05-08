@@ -18,7 +18,7 @@ public class OpenCSVBuilder<E> implements ICSVBuilder {
     public <T> List<T> getCSVList(Reader reader, Class<T> classType, char separator) throws CSVBuilderException {
         return this.getCSVBean(reader,classType,separator).parse();
     }
-    @Override
+    /*@Override
     public <T> Map<String,T> getCSVMap(Reader reader, Class<T> classType, char separator) throws CSVBuilderException {
         List CSVList=this.getCSVBean(reader,classType,separator).parse();
         Map<String,T> csvMapData=new HashMap<>();
@@ -34,6 +34,8 @@ public class OpenCSVBuilder<E> implements ICSVBuilder {
         }
         return csvMapData;
     }
+
+     */
     public <T> CsvToBean<T> getCSVBean(Reader reader, Class<T> classType, char separator) throws CSVBuilderException {
         try{
             CsvToBeanBuilder<T> csvToBeanBuilder = new CsvToBeanBuilder<>(reader);

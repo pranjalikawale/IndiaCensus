@@ -12,22 +12,25 @@ import com.opencsv.CSVReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CensusAnalyser {
     List<CensusDAO> censusCSVList=null;
     Map<String,CensusDAO> censusCSVMap=null;
     public String ColName=null;
     public enum FileType {INDIA,US,INDIASTATE;}
+    private  FileType fileType;
 
-    public CensusAnalyser(){ }
+    public CensusAnalyser(FileType fileType){
+        this.fileType=fileType;
+    }
 
     public <T> int CensusData(FileType fileType,String csvFilePath, Class<T> classType, char seprator) throws CensusAnalyserException {
         SeparatorCheck(seprator);
         checkCsvHeader(csvFilePath); // Check the column
         checkCSVType(classType);
         censusCSVMap= CensusAbstractFactory.getCensusData(fileType,csvFilePath,seprator);
-        //return censusCSVMap.size();
-        return getCount();
+        return censusCSVMap.size();
     }
     public int loadIndiaCensusData(FileType fileType,String csvFilePath) throws CensusAnalyserException {
         return CensusData(fileType,csvFilePath, IndiaCensusCSV.class, ',');
@@ -86,39 +89,23 @@ public class CensusAnalyser {
         }
     }
 
-    public  String getStateWiseSortedCensusData(String sortingOrder) throws CensusAnalyserException {
-        checkForListEmpty(censusCSVList);
+    public  String getStateWiseSortedCensusData() throws CensusAnalyserException {
+        checkForListEmpty(censusCSVMap);
         Comparator<CensusDAO> censusComparator=Comparator.comparing(CensusCSV->CensusCSV.state);
-        this.sort(censusComparator,censusCSVList,sortingOrder);
-        return getJson(censusCSVList);
+        return arraylistInSortedOrder(censusComparator);
     }
 
-    private void checkForListEmpty(List list) throws CensusAnalyserException {
-        if (list==null || list.size()==0){
+    private void checkForListEmpty(Map censusCSVMap) throws CensusAnalyserException {
+        if (censusCSVMap==null || censusCSVMap.size()==0){
             throw new CensusAnalyserException("No census data",CensusAnalyserException.ExceptionType.NO_CENSUS_DATA);
         }
     }
-
-    private <T> void sort(Comparator<T> csvComparator, List list,String sorting){
-        for (int i=0;i<list.size()-1;i++){
-            for (int j=i;j<list.size()-1;j++){
-                    T CSV1=(T) list.get(i);
-                    T CSV2=(T) list.get(j+1);
-                if(sorting.equals("ascending")) {
-                    if (csvComparator.compare(CSV1,CSV2)>0){
-                        list.set(i,CSV2);
-                        list.set(j+1,CSV1);
-                    }
-                }
-                else {
-                    if (csvComparator.compare(CSV1,CSV2)<0){
-                        list.set(i,CSV2);
-                        list.set(j+1,CSV1);
-
-                    }
-                }
-            }
-        }
+    private String arraylistInSortedOrder(Comparator <CensusDAO> censusComparator)throws CensusAnalyserException {
+        ArrayList censusDTO=censusCSVMap.values().stream()
+                .sorted(censusComparator)
+                .map(censusDAO->censusDAO.getCensusDTO(fileType))
+                .collect(Collectors.toCollection(ArrayList::new));
+        return getJson(censusDTO);
     }
 
     public String getJson(List list) {
@@ -126,33 +113,30 @@ public class CensusAnalyser {
         return sortedJson;
     }
 
-    public  String getStateCodeWiseSortedCensusData(String sortingOrder) throws CensusAnalyserException {
-        checkForListEmpty(censusCSVList);
+    public  String getStateCodeWiseSortedCensusData() throws CensusAnalyserException {
+        checkForListEmpty(censusCSVMap);
         Comparator<CensusDAO> censusComparator=Comparator.comparing(CensusCSV->CensusCSV.stateCode);
-        this.sort(censusComparator,censusCSVList,sortingOrder);
-        return getJson(censusCSVList);
+        return arraylistInSortedOrder(censusComparator);
     }
 
 
-    public  String getPopulationWiseSortedCensusData(String sortingOrder) throws CensusAnalyserException {
-        checkForListEmpty(censusCSVList);
+    public  String getPopulationWiseSortedCensusData() throws CensusAnalyserException {
+        checkForListEmpty(censusCSVMap);
         Comparator<CensusDAO> censusComparator=Comparator.comparing(CensusCSV->CensusCSV.population);
-        this.sort(censusComparator,censusCSVList,sortingOrder);
-        return getJson(censusCSVList);
+        return arraylistInSortedOrder(censusComparator.reversed());
     }
 
-    public  String getDensityWiseSortedCensusData(String sortingOrder) throws CensusAnalyserException {
-        checkForListEmpty(censusCSVList);
-        Comparator<CensusDAO> censusComparator=Comparator.comparing(CensusCSV->CensusCSV.densityPerSqKm);
-        this.sort(censusComparator,censusCSVList,sortingOrder);
-        return getJson(censusCSVList);
+    public  String getDensityWiseSortedCensusData() throws CensusAnalyserException {
+        checkForListEmpty(censusCSVMap);
+        Comparator<CensusDAO> censusComparator=Comparator.comparing(CensusCSV->CensusCSV.populationDensity);
+        return arraylistInSortedOrder(censusComparator.reversed());
     }
 
-    public String getAreaWiseSortedCensusData(String sortingOrder) throws CensusAnalyserException {
-        checkForListEmpty(censusCSVList);
-        Comparator<CensusDAO> censusComparator=Comparator.comparing(CensusCSV->CensusCSV.areaInSqKm);
-        this.sort(censusComparator,censusCSVList,sortingOrder);
-        return getJson(censusCSVList);
+    public String getAreaWiseSortedCensusData() throws CensusAnalyserException {
+        checkForListEmpty(censusCSVMap);
+        Comparator<CensusDAO> censusComparator=Comparator.comparing(CensusCSV->CensusCSV.totalArea);
+        return arraylistInSortedOrder(censusComparator.reversed());
+
     }
      /*  public <T> int getCount(Iterator<T> iterator){
         Iterable<T> csvIterable = () -> iterator;
