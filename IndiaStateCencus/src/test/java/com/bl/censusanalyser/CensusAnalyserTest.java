@@ -4,6 +4,7 @@ import com.bl.censusanalyser.analyser.CensusAnalyser;
 import com.bl.censusanalyser.exception.CensusAnalyserException;
 import com.bl.censusanalyser.model.IndiaStateCodeCSV;
 import com.bl.censusanalyser.model.IndiaCensusCSV;
+import com.bl.censusanalyser.model.USCensusCSV;
 import com.google.gson.Gson;
 import org.junit.Assert;
 import org.junit.Test;
@@ -225,9 +226,20 @@ public class CensusAnalyserTest {
             int numOfRecords = censusAnalyser.loadUSCensusData(CensusAnalyser.FileType.US,US_CSV_FILE_PATH);
             Assert.assertEquals(51,numOfRecords);
         } catch (CensusAnalyserException e) { }
-
-
+    }
+    @Test
+    public void givenUSCensusData_WhenSortOnPopulation_ShouldReturnSortedResult() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            censusAnalyser.loadIndiaCensusData(CensusAnalyser.FileType.US,US_CSV_FILE_PATH);
+            String sortedCensusData=censusAnalyser.getPopulationWiseSortedCensusData("descending");
+            USCensusCSV censusCSV[] = new Gson().fromJson(sortedCensusData, USCensusCSV[].class);
+            Assert.assertEquals("California", censusCSV[0].state);
+        }catch (CensusAnalyserException e) {
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.NO_CENSUS_DATA,e.type);
         }
+    }
+
 }
 
 
