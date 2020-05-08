@@ -24,7 +24,8 @@ public class CensusAnalyser {
         this.countryAndState = countryAndState;
     }
 
-    public <T> int CensusData(CountryAndState countryAndState, String csvFilePath, Class<T> classType, char seprator) throws CensusAnalyserException {
+    public <T> int CensusData(CountryAndState countryAndState, String csvFilePath, Class<T> classType, char seprator)
+                              throws CensusAnalyserException {
         SeparatorCheck(seprator);
         checkCsvHeader(csvFilePath); // Check the column
         checkCSVType(classType);
@@ -36,16 +37,21 @@ public class CensusAnalyser {
             return CensusData(countryAndState,csvFilePath, IndiaCensusCSV.class,',');
         else if(countryAndState.equals(CountryAndState.US))
             return CensusData(countryAndState,csvFilePath, USCensusCSV.class,',');
-        return CensusData(countryAndState,csvFilePath, IndiaStateCodeCSV.class,',');
+        else if(countryAndState.equals(CountryAndState.INDIASTATE))
+            return CensusData(countryAndState,csvFilePath, IndiaStateCodeCSV.class,',');
+        throw new CensusAnalyserException("Incorrect type of file",
+                                            CensusAnalyserException.ExceptionType.INVALID_FILE_TYPE);
     }
 
-    public void SeparatorCheck(char separator) throws CensusAnalyserException {
+    private void SeparatorCheck(char separator) throws CensusAnalyserException {
         if(separator!=',')
         { throw new CensusAnalyserException(CensusAnalyserException.ExceptionType.WRONG_DELIMETER); }
     }
 
-    public void checkCSVType(Class CSVClassType) throws CensusAnalyserException {
-        if(!((CSVClassType.getName().equals("com.bl.censusanalyser.model.IndiaCensusCSV"))||(CSVClassType.getName().equals("com.bl.censusanalyser.model.IndiaStateCodeCSV"))||(CSVClassType.getName().equals("com.bl.censusanalyser.model.USCensusCSV")))){
+    private void checkCSVType(Class CSVClassType) throws CensusAnalyserException {
+        if(!((CSVClassType.getName().equals("com.bl.censusanalyser.model.IndiaCensusCSV"))
+                ||(CSVClassType.getName().equals("com.bl.censusanalyser.model.IndiaStateCodeCSV"))
+                ||(CSVClassType.getName().equals("com.bl.censusanalyser.model.USCensusCSV")))){
             throw new CensusAnalyserException(CensusAnalyserException.ExceptionType.NO_SUCH_CLASS_TYPE);
         }
     }
@@ -54,7 +60,7 @@ public class CensusAnalyser {
         this.ColName=ColName;
     }
 
-    public void checkCsvHeader(String csvFilePath) throws CensusAnalyserException {
+    private void checkCsvHeader(String csvFilePath) throws CensusAnalyserException {
         if(ColName!=null)
         {
             try {
@@ -118,7 +124,7 @@ public class CensusAnalyser {
     }
 
 
-    private String arraylistInSortedOrder(Comparator <CensusDAO> censusComparator)throws CensusAnalyserException {
+    private String arraylistInSortedOrder(Comparator <CensusDAO> censusComparator){
         ArrayList censusDTO=censusCSVMap.values().stream()
                 .sorted(censusComparator)
                 .map(censusDAO->censusDAO.getCensusDTO(countryAndState))
@@ -126,7 +132,7 @@ public class CensusAnalyser {
         return getJson(censusDTO);
     }
 
-    public String getJson(List list) {
+    private String getJson(List list) {
         String sortedJson=new Gson().toJson(list);
         return sortedJson;
     }
