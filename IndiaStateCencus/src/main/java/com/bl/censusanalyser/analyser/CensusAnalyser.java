@@ -1,7 +1,7 @@
 package com.bl.censusanalyser.analyser;
 
+import com.bl.censusanalyser.censusAdapter.CensusAbstractFactory;
 import com.bl.censusanalyser.censusdao.CensusDAO;
-import com.bl.censusanalyser.exception.CSVBuilderException;
 import com.bl.censusanalyser.exception.CensusAnalyserException;
 import com.bl.censusanalyser.model.IndiaStateCodeCSV;
 import com.bl.censusanalyser.model.IndiaCensusCSV;
@@ -25,7 +25,8 @@ public class CensusAnalyser {
         SeparatorCheck(seprator);
         checkCsvHeader(csvFilePath); // Check the column
         checkCSVType(classType);
-        censusCSVMap=new CensusLoader().loadCensusData(fileType,csvFilePath,seprator);
+        censusCSVMap= CensusAbstractFactory.getCensusData(fileType,csvFilePath,seprator);
+        //return censusCSVMap.size();
         return getCount();
     }
     public int loadIndiaCensusData(FileType fileType,String csvFilePath) throws CensusAnalyserException {
