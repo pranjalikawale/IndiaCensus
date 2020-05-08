@@ -31,15 +31,11 @@ public class CensusAnalyser {
         censusCSVMap= CensusAbstractFactory.getCensusData(countryAndState,csvFilePath,seprator);
         return censusCSVMap.size();
     }
-    public int loadIndiaCensusData(CountryAndState countryAndState, String csvFilePath) throws CensusAnalyserException {
-        return CensusData(countryAndState,csvFilePath, IndiaCensusCSV.class, ',');
-    }
-
-    public int loadUSCensusData(CountryAndState countryAndState, String csvFilePath) throws CensusAnalyserException {
-        return CensusData(countryAndState,csvFilePath, USCensusCSV.class, ',');
-    }
-
-    public int loadIndianStateCode(CountryAndState countryAndState, String csvFilePath) throws CensusAnalyserException {
+    public int CensusData(CountryAndState countryAndState, String csvFilePath) throws CensusAnalyserException {
+        if(countryAndState.equals(CountryAndState.INDIA))
+            return CensusData(countryAndState,csvFilePath, IndiaCensusCSV.class,',');
+        else if(countryAndState.equals(CountryAndState.US))
+            return CensusData(countryAndState,csvFilePath, USCensusCSV.class,',');
         return CensusData(countryAndState,csvFilePath, IndiaStateCodeCSV.class,',');
     }
 
