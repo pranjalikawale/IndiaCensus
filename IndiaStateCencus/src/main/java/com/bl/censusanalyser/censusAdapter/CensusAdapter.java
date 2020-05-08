@@ -54,10 +54,4 @@ public abstract class CensusAdapter {
         return censusCSVMap;
     }
 
-    /*while (csvIterator.hasNext()) {
-                this.stateCodeCSVList.add(new IndiaCensusDAO(csvIterator.next()));}
-            noOfEnteries = this.getCount(csvIterable);
-            Map<String,Object> stateCodeCSVMapData=new HashMap<>();
-            stateCodeCSVMapData=csvBuilder.getCSVMap(reader,classType,seprator);
-            */
 }

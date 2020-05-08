@@ -139,13 +139,4 @@ public class CensusAnalyser {
         return sortedJson;
     }
 
-    /*  public <T> int getCount(Iterator<T> iterator){
-        Iterable<T> csvIterable = () -> iterator;
-        return (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
     }
-    public int getCount(){
-        censusCSVList= new ArrayList(censusCSVMap.values());
-        return this.censusCSVList.size();
-    }
-    */
-}
